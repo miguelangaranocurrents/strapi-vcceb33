@@ -817,7 +817,17 @@ const RelationModalWithContext = ({
             setTextValue(text);
           }}
           onInputChange={(event) => {
-            handleSearch(event.currentTarget.value);
+            const text = event.currentTarget.value;
+
+            /**
+             * Once a relation is selected, the combobox writes its label into the input. That is
+             * not a search, so don't filter the remaining relations by the selected one's name.
+             */
+            const isConnectedLabel = (fieldValue?.connect ?? []).some(
+              (rel) => getRelationLabel(rel as RelationResult, mainField, emptyLabel) === text
+            );
+
+            handleSearch(isConnectedLabel ? '' : text);
           }}
           {...props}
         >
